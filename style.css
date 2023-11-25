@@ -26,6 +26,11 @@ main {
   margin: 30rem auto 0 auto;
 }
 
+h1 {
+  font-size: 8rem;
+  margin: 2rem 4rem;
+}
+
 .left-section {
   display: flex;
   flex-direction: column;
