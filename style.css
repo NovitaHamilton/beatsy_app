@@ -60,19 +60,21 @@ h1 {
   width: 50%;
 }
 
-.recently-added {
+.search-result {
   display: flex;
   flex-direction: column;
   gap: 2rem;
+  opacity: 0;
+  transition: opacity 1.2s;
 }
 
-.recently-added ul {
+.search-result ul {
   display: flex;
   flex-direction: row;
   justify-content: space-evenly;
 }
 
-.recently-added li {
+.search-result li {
   font-size: 4rem;
 }
 
