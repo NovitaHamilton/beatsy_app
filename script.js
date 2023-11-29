@@ -1,8 +1,6 @@
 'use strict';
 import { myClientId, myClientSecret } from './config.js';
 
-console.log(myClientId, myClientSecret);
-
 const clientId = myClientId;
 const clientSecret = myClientSecret;
 
@@ -23,36 +21,30 @@ const getToken = async () => {
   }
 };
 
-getToken();
-
 // Function for the search bar
-const searchItem = async (token) => {
+const searchItem = async (searchInput) => {
   try {
     const token = await getToken();
     console.log(token);
+    console.log(searchInput);
     const response = await fetch(
-      'https://api.spotify.com/v1/search?q=masego&type=artist%2Ctrack%2Calbum',
+      `https://api.spotify.com/v1/search?q=${searchInput}&type=artist%2Ctrack%2Calbum`,
       {
         method: 'GET',
         headers: { Authorization: 'Bearer ' + token },
       }
     );
     const data = await response.json();
-    console.log(data);
-    return data;
+    console.log(data.artists.items[0].images[0].url);
+    displaySearchResult(data);
   } catch (error) {
     console.error('Fetch error', error);
   }
 };
 
-// searchItem();
-
-const displaySearchResult = async () => {
-  const searchResult = await searchItem();
-  console.log(searchResult);
+const displaySearchResult = function (data) {
+  elementSearchResult.style.opacity = 1;
 };
-
-displaySearchResult();
 
 //-----------------------------------Elemement Selector-----------------------------//
 
@@ -61,13 +53,18 @@ const elementSearchResult = document.querySelector('.search-result');
 
 //------------------------------------Event Listener------------------------------//
 
-elementSearchBar.addEventListener('keydown', searchOnEnter); // Capturing 'Enter' on search bar
+elementSearchBar.addEventListener('keyup', searchOnEnter); // Capturing 'Enter' on search bar
 
 //-----------Functions---------------//
 
 function searchOnEnter(e) {
+  e.preventDefault();
   console.log(e.key);
   if (e.key === 'Enter') {
-    searchItem();
+    const searchInput = elementSearchBar.value;
+    console.log(searchInput);
+
+    searchItem(searchInput);
+    elementSearchBar.value = '';
   }
 }
