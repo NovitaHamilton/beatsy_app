@@ -28,22 +28,18 @@ const searchItem = async (searchInput) => {
     console.log(token);
     console.log(searchInput);
     const response = await fetch(
-      `https://api.spotify.com/v1/search?q=${searchInput}&type=artist%2Ctrack%2Calbum`,
+      `https://api.spotify.com/v1/search?q=${searchInput}&type=artist%2Ctrack&limit=5`,
       {
         method: 'GET',
         headers: { Authorization: 'Bearer ' + token },
       }
     );
     const data = await response.json();
-    console.log(data.artists.items[0].images[0].url);
+    console.log(data);
     displaySearchResult(data);
   } catch (error) {
     console.error('Fetch error', error);
   }
-};
-
-const displaySearchResult = function (data) {
-  elementSearchResult.style.opacity = 1;
 };
 
 //-----------------------------------Elemement Selector-----------------------------//
@@ -62,9 +58,114 @@ function searchOnEnter(e) {
   console.log(e.key);
   if (e.key === 'Enter') {
     const searchInput = elementSearchBar.value;
-    console.log(searchInput);
-
+    clearSearchResults();
     searchItem(searchInput);
-    elementSearchBar.value = '';
   }
+}
+
+function displaySearchResult(data) {
+  if (data.artists.items.length > 0) {
+    displayArtists(data.artists.items);
+  }
+
+  if (data.tracks.items.length > 0) {
+    displayTracks(data.tracks.items);
+  }
+  elementSearchResult.style.opacity = 1;
+}
+
+function clearSearchResults() {
+  // Remove all child nodes from the search result container
+  while (elementSearchResult.firstChild) {
+    elementSearchResult.removeChild(elementSearchResult.firstChild);
+  }
+}
+
+function displayArtists(artists) {
+  console.log('Artists:', artists);
+
+  // Create HTML elements for artists
+  const artistsContainer = document.createElement('div');
+  artistsContainer.classList.add('artists-container');
+
+  const artistsTitle = document.createElement('h2');
+  artistsTitle.textContent = 'Artists';
+
+  // Create a container for each artist
+  const artistsList = document.createElement('div');
+  artistsList.classList.add('artists-list');
+
+  artists.forEach((artist) => {
+    // Create a container for each artist item
+    const artistItem = document.createElement('div');
+    artistItem.classList.add('artist-item');
+
+    // Check if artist has images and the image array is not empty
+    if (artist.images && artist.images.length > 0) {
+      const artistImage = document.createElement('img');
+      artistImage.src = artist.images[0].url;
+      console.log(artist.images[0].url);
+      artistItem.appendChild(artistImage);
+    }
+
+    //Create a paragraph for artist's name
+    const artistName = document.createElement('p');
+    artistName.textContent = artist.name;
+    artistItem.appendChild(artistName);
+
+    artistsList.appendChild(artistItem);
+  });
+
+  artistsContainer.appendChild(artistsTitle);
+  artistsContainer.appendChild(artistsList);
+  elementSearchResult.appendChild(artistsContainer);
+}
+
+function displayTracks(tracks) {
+  console.log('Tracks:', tracks);
+  // Create HTML elements for artists
+  const tracksContainer = document.createElement('div');
+  tracksContainer.classList.add('tracks-container');
+
+  const tracksTitle = document.createElement('h2');
+  tracksTitle.textContent = 'Songs';
+
+  // Create a container for each artist
+  const tracksList = document.createElement('div');
+  tracksList.classList.add('tracks-list');
+
+  tracks.forEach((track) => {
+    // Create a container for each artist item
+    const trackItem = document.createElement('div');
+    trackItem.classList.add('track-item');
+
+    // Check if artist has images and the image array is not empty
+    if (track.album.images && track.album.images.length > 0) {
+      const trackImage = document.createElement('img');
+      trackImage.src = track.album.images[0].url;
+      console.log(track.album.images[0].url);
+      trackItem.appendChild(trackImage);
+    }
+
+    const trackDetails = document.createElement('div');
+    trackDetails.classList.add('track-details');
+
+    //Create a paragraph for track's name
+    const trackName = document.createElement('p');
+    trackName.textContent = track.name;
+    trackDetails.appendChild(trackName);
+
+    //Create a paragraph for artis's name
+    const artistName = document.createElement('p');
+    artistName.classList.add('track-artist');
+    artistName.textContent = track.artists[0].name;
+    trackDetails.appendChild(artistName);
+
+    trackItem.appendChild(trackDetails);
+    tracksList.appendChild(trackItem);
+  });
+
+  tracksContainer.appendChild(tracksTitle);
+  tracksContainer.appendChild(tracksList);
+  elementSearchResult.appendChild(tracksContainer);
 }
