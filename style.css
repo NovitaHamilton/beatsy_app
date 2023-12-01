@@ -18,25 +18,25 @@ body {
 }
 
 h2 {
-  font-size: 4.5rem;
+  font-size: 3rem;
 }
 
 main {
   display: flex;
   flex-direction: row;
-  justify-content: space-around;
-  margin: 15rem auto 0 auto;
+  justify-content: space-between;
+  margin: 5rem auto 0 auto;
 }
 
 h1 {
-  font-size: 8rem;
+  font-size: 4rem;
   margin: 2rem 4rem;
 }
 
 .left-section {
   display: flex;
   flex-direction: column;
-  gap: 5rem;
+  gap: 1rem;
   width: 60%;
   margin-left: 8rem;
 }
@@ -45,19 +45,19 @@ h1 {
   align-items: center;
   display: flex;
   flex-direction: row;
-  gap: 8rem;
+  gap: 5rem;
   justify-content: center;
 }
 
 .greetings {
-  font-size: 10rem;
+  font-size: 7rem;
 }
 
 .search-bar {
-  border: 0.5rem solid teal;
+  border: 0.3rem solid teal;
   border-radius: 2rem;
-  font-size: 3rem;
-  height: 70%;
+  font-size: 2rem;
+  height: 40%;
   padding-left: 4rem;
   width: 50%;
 }
@@ -68,17 +68,6 @@ h1 {
   gap: 2rem;
   opacity: 0;
   transition: opacity 1.2s;
-}
-
-.search-result ul {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-evenly;
-}
-
-.search-result li {
-  font-size: 4rem;
-  list-style-type: none;
 }
 
 .artists-container {
@@ -110,11 +99,11 @@ h1 {
   max-width: 20rem;
   height: auto;
   object-fit: cover;
-  width: 100%;
+  width: 90%;
 }
 
 .artist-item p {
-  font-size: 2.5rem;
+  font-size: 2rem;
 }
 
 .right-section {
@@ -131,9 +120,9 @@ h1 {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  font-size: 3rem;
+  font-size: 2rem;
   justify-content: space-between;
-  gap: 1.5rem;
+  gap: 1rem;
 }
 
 .track-item {
@@ -141,12 +130,12 @@ h1 {
   flex-direction: row;
   align-items: center;
   justify-content: flex-start;
-  gap: 3rem;
-  width: 50%;
-  border: 0.2rem solid #ffffffdd;
+  gap: 2rem;
+  width: 70%;
+  border: 0.1rem solid #ffffffdd;
   background-color: #81b39ab1;
   border-radius: 1rem;
-  padding: 1rem;
+  padding: 0.5rem 1rem;
 }
 
 .track-item-playlist {
@@ -154,12 +143,12 @@ h1 {
   flex-direction: row;
   align-items: center;
   justify-content: flex-start;
-  gap: 3rem;
-  width: 50%;
-  border: 0.2rem solid #ffffffdd;
+  gap: 2rem;
+  width: 80%;
+  border: 0.1rem solid #ffffffdd;
   background-color: #e1785eb9;
   border-radius: 1rem;
-  padding: 1rem;
+  padding: 0.5rem 1rem;
 }
 
 .track-details {
@@ -176,7 +165,7 @@ h1 {
 }
 
 .track-artist {
-  font-size: 2rem;
+  font-size: 1.5rem;
   font-weight: bolder;
 }
 
@@ -187,6 +176,7 @@ h1 {
   font-size: 5rem;
   justify-content: space-between;
   gap: 3rem;
+  margin-top: 4rem;
 }
 
 .playlist-container {

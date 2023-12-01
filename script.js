@@ -13,6 +13,8 @@ const clientSecret = myClientSecret;
 const playlistId = myPlaylistId;
 let token;
 
+const mockAPIurl = 'https://654d199b77200d6ba859fcf7.mockapi.io/';
+
 // To get token (token expires in 1hr)
 const getToken = async () => {
   try {
