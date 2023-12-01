@@ -8,9 +8,9 @@ const searchResults = document.querySelector('.search-result');
 const elementPlaylist = document.querySelector('.playlist');
 
 //--------------------------API Calls Functions----------------------------------//
-const clientId = myClientId;
-const clientSecret = myClientSecret;
-const playlistId = myPlaylistId;
+const clientId = process.env.myClientId;
+const clientSecret = process.env.myClientSecret;
+const playlistId = process.env.myPlaylistId;
 let token;
 
 const mockAPIurl = 'https://654d199b77200d6ba859fcf7.mockapi.io/';
