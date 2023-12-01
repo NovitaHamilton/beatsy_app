@@ -1,5 +1,5 @@
 'use strict';
-import { myClientId, myClientSecret, myPlaylistId } from './config.js';
+// import { myClientId, myClientSecret, myPlaylistId } from './config.js';
 
 //-----------------------------------Elemement Selector-----------------------------//
 
