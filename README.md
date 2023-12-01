@@ -1,4 +1,4 @@
-# groovy_app
+# beatsy_app
 A simple Music Discovery App for Coding in Color Full Stack Developer Program
 
 ## Objectives
