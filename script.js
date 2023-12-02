@@ -1,18 +1,16 @@
 'use strict';
-import { myClientId, myClientSecret } from './config.js';
 
 //-----------------------------------Elemement Selector-----------------------------//
 const searchBar = document.querySelector('.search-bar');
 const searchResults = document.querySelector('.search-result');
-const artistTopTracks = document.querySelector('.artist-top-tracks');
 const elementPlaylist = document.querySelector('.playlist');
 
 // Initialize app on window load
 window.addEventListener('load', initializeApp);
 
 //--------------------------API Calls----------------------------------//
-const clientId = myClientId;
-const clientSecret = myClientSecret;
+const clientId = 'b11afd8d1d42432ab734f20b8f5e1898';
+const clientSecret = 'cd1183df69e84d9ba6f26b492f792233';
 let token;
 const mockAPIUrl = 'https://654d199b77200d6ba859fcf7.mockapi.io/tracks';
 
@@ -123,10 +121,31 @@ const getArtistTopTracks = async (artistId) => {
         headers: { Authorization: 'Bearer ' + token },
       }
     );
+    const topTracks = await response.json();
+    console.log(topTracks);
+
+    const artistDetails = await getArtistDetails(artistId);
+    console.log(artistDetails);
+
+    displayArtistTopTracks(topTracks, artistDetails);
+    return topTracks, artistDetails;
+  } catch (error) {
+    console.error('Fetch error', error);
+  }
+};
+
+const getArtistDetails = async (artistId) => {
+  try {
+    const response = await fetch(
+      `https://api.spotify.com/v1/artists/${artistId}`,
+      {
+        method: 'GET',
+        headers: { Authorization: 'Bearer ' + token },
+      }
+    );
     const data = await response.json();
-    displayArtistTopTracks(data);
-    return data;
     console.log(data);
+    return data;
   } catch (error) {
     console.error('Fetch error', error);
   }
@@ -282,7 +301,17 @@ function displayArtists(artists) {
     // Check if artist has images and the image array is not empty
     if (artist.images && artist.images.length > 0) {
       const artistImage = document.createElement('img');
-      artistImage.src = artist.images[0].url;
+      const imageDetails = artist.images[0];
+
+      //Set the image attribute
+      artistImage.src = imageDetails.url;
+
+      //Set the height and width attributes
+      artistImage.height = imageDetails.height;
+      artistImage.width = imageDetails.width;
+      console.log('height', imageDetails.height);
+      console.log('width', imageDetails.width);
+
       artistItem.appendChild(artistImage);
     }
 
@@ -322,12 +351,12 @@ function displayArtists(artists) {
 }
 
 // Create HTML elements for tracks
-function displayTracks(tracks) {
+function displayTracks(tracks, title) {
   const tracksContainer = document.createElement('div');
   tracksContainer.classList.add('tracks-container');
 
   const tracksTitle = document.createElement('h2');
-  tracksTitle.textContent = 'Songs';
+  tracksTitle.textContent = title || 'Songs'; // Default to 'Songs' if title not provided
 
   // Create a container for each track
   const tracksList = document.createElement('div');
@@ -414,18 +443,60 @@ function displayTracks(tracks) {
 }
 
 // Display Artist's top tracks
-function displayArtistTopTracks(data) {
-  // Clear existing content in artistTopTracks container
-  artistTopTracks.innerHTML = '';
+function displayArtistTopTracks(topTracks, artistDetails) {
+  if (topTracks.tracks.length > 0) {
+    //    // Display artist details
+    displayArtistDetails(artistDetails);
 
-  // Display artist details
-  displayArtistDetails(data.tracks[0].artists[0]);
-
-  if (data.tracks.length > 0) {
-    displayTracks(data.tracks.items);
+    // Display top tracks
+    displayTracks(topTracks.tracks, 'Top Songs');
   }
-  artistTopTracks.style.opacity = 1;
 }
 
 // Display Artist's details
-function displayArtistDetails(artist) {}
+function displayArtistDetails(artistDetails) {
+  console.log(artistDetails);
+  // Create HTML elements for artists
+  const artistsContainer = document.createElement('div');
+  artistsContainer.classList.add('artists-container');
+
+  const artistsTitle = document.createElement('h2');
+  artistsTitle.textContent = 'Artists';
+
+  const artistItem = document.createElement('div');
+  artistItem.classList.add('artist-item');
+
+  // Check if artist has images and the image array is not empty
+  if (artistDetails.images && artistDetails.images.length > 0) {
+    const artistImage = document.createElement('img');
+    const imageDetails = artistDetails.images[0];
+
+    // Set the image attribute
+    artistImage.src = imageDetails.url;
+
+    //Set the height and width attributes
+    artistImage.height = imageDetails.height;
+    artistImage.width = imageDetails.width;
+
+    artistItem.appendChild(artistImage);
+  }
+
+  //Create a paragraph for artist's name
+  const artistName = document.createElement('p');
+  artistName.textContent = artistDetails.name;
+  artistItem.appendChild(artistName);
+
+  const artistFollowers = document.createElement('p');
+  artistFollowers.textContent = `Followers: ${artistDetails.followers.total}`;
+  artistItem.appendChild(artistFollowers);
+  console.log(artistFollowers);
+
+  const artistGenres = document.createElement('p');
+  artistGenres.textContent = `Genre: ${artistDetails.genres[0]}`;
+  artistItem.appendChild(artistGenres);
+  console.log(artistGenres);
+
+  artistsContainer.appendChild(artistsTitle);
+  artistsContainer.appendChild(artistItem);
+  searchResults.appendChild(artistsContainer);
+}
