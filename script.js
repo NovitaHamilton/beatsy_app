@@ -1,21 +1,22 @@
 'use strict';
-// import { myClientId, myClientSecret, myPlaylistId } from './config.js';
+import { myClientId, myClientSecret } from './config.js';
 
 //-----------------------------------Elemement Selector-----------------------------//
-
 const searchBar = document.querySelector('.search-bar');
 const searchResults = document.querySelector('.search-result');
+const artistTopTracks = document.querySelector('.artist-top-tracks');
 const elementPlaylist = document.querySelector('.playlist');
 
-//--------------------------API Calls Functions----------------------------------//
-const clientId = process.env.myClientId;
-const clientSecret = process.env.myClientSecret;
-const playlistId = process.env.myPlaylistId;
+// Initialize app on window load
+window.addEventListener('load', initializeApp);
+
+//--------------------------API Calls----------------------------------//
+const clientId = myClientId;
+const clientSecret = myClientSecret;
 let token;
+const mockAPIUrl = 'https://654d199b77200d6ba859fcf7.mockapi.io/tracks';
 
-const mockAPIurl = 'https://654d199b77200d6ba859fcf7.mockapi.io/';
-
-// To get token (token expires in 1hr)
+// To get token from Spotify (token expires in 1hr) (POST)
 const getToken = async () => {
   try {
     const response = await fetch(`https://accounts.spotify.com/api/token`, {
@@ -27,23 +28,13 @@ const getToken = async () => {
     });
     const data = await response.json();
     token = data.access_token;
-    console.log(token);
     return token;
   } catch (error) {
     console.error('Fetch error', error);
   }
 };
 
-async function initializeApp() {
-  await getToken();
-  await getPlaylist();
-}
-
-// Initialize app on window load
-window.addEventListener('load', initializeApp);
-searchBar.addEventListener('keyup', searchOnEnter); // Capturing 'Enter' on search bar
-
-// To get artist and tracks data from Spotify
+// To get artist and tracks data from Spotify (GET)
 const searchItem = async (searchInput) => {
   try {
     const response = await fetch(
@@ -60,16 +51,10 @@ const searchItem = async (searchInput) => {
   }
 };
 
-// To get a playlist from Spotify
+// To get playlist data from mockAPI (GET)
 const getPlaylist = async () => {
   try {
-    const response = await fetch(
-      `https://api.spotify.com/v1/playlists/${playlistId}`,
-      {
-        method: 'GET',
-        headers: { Authorization: 'Bearer ' + token },
-      }
-    );
+    const response = await fetch(`${mockAPIUrl}`);
     const data = await response.json();
     displayPlaylist(data);
     console.log(data);
@@ -78,29 +63,84 @@ const getPlaylist = async () => {
   }
 };
 
-// To add a song to playlist
-const addToPlaylist = async (trackId) => {
+// To post a track to My Playlist in mockAPI (POST)
+const addToPlaylist = async (trackInfo) => {
   try {
-    const response = await fetch(
-      `https://api.spotify.com/v1/playlists/${playlistId}/tracks`,
-      {
-        method: 'POST',
-        headers: { Authorization: 'Bearer ' + token },
-        data: {
-          uris: ['spotify:track:' + trackId],
-          position: 0,
-        },
-      }
-    );
-    const data = await response.json();
-    console.log(data);
-    return data;
+    // To add the track to playlist
+    const addResponse = await fetch(`${mockAPIUrl}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        id: trackInfo.id,
+        name: trackInfo.name,
+        artist: trackInfo.artist,
+        image: trackInfo.image,
+      }),
+    });
+    const addData = await addResponse.json();
+    console.log('Added data', addData);
+
+    // To get the updated playlist
+    const playlistResponse = await fetch(`${mockAPIUrl}`);
+    const playlistData = await playlistResponse.json();
+
+    // Display the updated playlist
+    displayPlaylist(playlistData);
+
+    return addData;
   } catch (error) {
     console.error('Fetch error', error);
   }
 };
 
-//-----------UI Functions---------------//
+// To remove a track from playlist in mockAPI (DELETE)
+const removeFromPlaylist = async (trackId) => {
+  try {
+    const response = await fetch(`${mockAPIUrl}/${trackId}`, {
+      method: 'DELETE',
+    });
+
+    // To get the updated playlist
+    const playlistResponse = await fetch(`${mockAPIUrl}`);
+    const playlistData = await playlistResponse.json();
+
+    // Display the updated playlist
+    displayPlaylist(playlistData);
+    return playlistData;
+  } catch (error) {
+    console.error('Fetch error', error);
+  }
+};
+
+// To get artist's top tracks
+const getArtistTopTracks = async (artistId) => {
+  console.log(token);
+  try {
+    const response = await fetch(
+      `https://api.spotify.com/v1/artists/${artistId}/top-tracks?market=CA`,
+      {
+        method: 'GET',
+        headers: { Authorization: 'Bearer ' + token },
+      }
+    );
+    const data = await response.json();
+    displayArtistTopTracks(data);
+    return data;
+    console.log(data);
+  } catch (error) {
+    console.error('Fetch error', error);
+  }
+};
+
+//-------------------------------UI Functions-----------------------------//
+
+// To initialize application
+async function initializeApp() {
+  await getToken();
+  await getPlaylist();
+
+  searchBar.addEventListener('keyup', searchOnEnter); // Capturing 'Enter' on search bar
+}
 
 function searchOnEnter(e) {
   e.preventDefault();
@@ -112,16 +152,16 @@ function searchOnEnter(e) {
 }
 
 function displayPlaylist(playlist) {
+  // Clear the existing content in playlist
+  elementPlaylist.innerHTML = '';
+
   // Create container for playlist
   const playlistContainer = document.createElement('div');
   playlistContainer.classList.add('playlist-container');
 
   // Create h2 element for playlist title
   const playlistTitle = document.createElement('h2');
-  playlistTitle.textContent = playlist.name;
-
-  const tracks = playlist.tracks.items;
-  console.log(tracks);
+  playlistTitle.textContent = 'My Playlist';
 
   // Create container for all tracks
   const tracksContainer = document.createElement('div');
@@ -132,14 +172,14 @@ function displayPlaylist(playlist) {
   tracksList.classList.add('tracks-list');
 
   // Create a container for each track item
-  tracks.forEach((track) => {
+  playlist.forEach((track) => {
     const trackItem = document.createElement('div');
     trackItem.classList.add('track-item-playlist');
 
-    // Check if track has images and the image array is not empty
-    if (track.track.album.images && track.track.album.images.length > 0) {
+    // Check if track has image
+    if (track.image) {
       const trackImage = document.createElement('img');
-      trackImage.src = track.track.album.images[0].url;
+      trackImage.src = track.image;
       trackItem.appendChild(trackImage);
     }
 
@@ -148,18 +188,33 @@ function displayPlaylist(playlist) {
 
     //Create a paragraph for track's name
     const trackName = document.createElement('p');
-    trackName.textContent = track.track.name;
-    console.log(track.track.name);
+    trackName.textContent = track.name;
     trackDetails.appendChild(trackName);
 
     //Create a paragraph for tracks's artist name
     const artistName = document.createElement('p');
     artistName.classList.add('track-artist');
-    artistName.textContent = track.track.artists[0].name;
-    console.log(track.track.artists[0].name);
+    artistName.textContent = track.artist;
     trackDetails.appendChild(artistName);
 
+    // Store track ID as a custom data attribute with 'dataset'
+    trackItem.dataset.trackId = track.id;
+    console.log(track.id);
+
+    // Add button to remove track to playlist
+    const deleteButton = document.createElement('button');
+    deleteButton.classList.add('remove-from-playlist');
+
+    // Add plus icon inside the button
+    const deleteIcon = document.createElement('i');
+    deleteIcon.classList.add('fas', 'fa-x');
+    deleteButton.appendChild(deleteIcon);
+
+    // Set title for button tooltip
+    deleteButton.title = 'Remove from Playlist';
+
     trackItem.appendChild(trackDetails);
+    trackItem.appendChild(deleteButton);
     tracksList.appendChild(trackItem);
   });
 
@@ -167,6 +222,26 @@ function displayPlaylist(playlist) {
   playlistContainer.appendChild(playlistTitle);
   playlistContainer.appendChild(tracksContainer);
   elementPlaylist.appendChild(playlistContainer);
+
+  // Track selector
+  const elementTrackItem = document.querySelectorAll('.track-item-playlist');
+
+  // Event listener to capture selected track on click
+  elementTrackItem.forEach(function (track) {
+    track.addEventListener('click', onRemoveClick);
+  });
+
+  // When user click on remove a track
+  function onRemoveClick(e) {
+    e.preventDefault();
+    console.log(e.target);
+    const selectedTrack = e.target.closest('.track-item-playlist');
+    const trackId = selectedTrack.dataset.trackId;
+
+    console.log('Selected Track:', selectedTrack);
+    console.log('Track ID:', trackId);
+    removeFromPlaylist(trackId);
+  }
 }
 
 function displaySearchResult(data) {
@@ -188,7 +263,6 @@ function clearSearchResults() {
 }
 
 function displayArtists(artists) {
-  console.log(artists);
   // Create HTML elements for artists
   const artistsContainer = document.createElement('div');
   artistsContainer.classList.add('artists-container');
@@ -235,13 +309,15 @@ function displayArtists(artists) {
     artist.addEventListener('click', onArtistClick);
   });
 
-  // When user click on a track
+  // When user click on an artist
   function onArtistClick(e) {
     e.preventDefault();
     const selectedArtist = e.target.closest('.artist-item');
     const artistId = selectedArtist.dataset.artistId;
     console.log('Selected Artist:', selectedArtist);
     console.log('Artist ID:', artistId);
+    getArtistTopTracks(artistId);
+    clearSearchResults();
   }
 }
 
@@ -287,7 +363,20 @@ function displayTracks(tracks) {
     trackItem.dataset.trackId = track.id;
     console.log(track.id);
 
+    // Add button to add track to playlist
+    const addButton = document.createElement('button');
+    addButton.classList.add('add-to-playlist');
+
+    // Add plus icon inside the button
+    const plusIcon = document.createElement('i');
+    plusIcon.classList.add('fas', 'fa-plus');
+    addButton.appendChild(plusIcon);
+
+    // Set title for button tooltip
+    addButton.title = 'Add to My Playlist';
+
     trackItem.appendChild(trackDetails);
+    trackItem.appendChild(addButton);
     tracksList.appendChild(trackItem);
   });
 
@@ -307,10 +396,36 @@ function displayTracks(tracks) {
   function onTrackClick(e) {
     e.preventDefault();
     console.log(e.target);
-    const selectedTrack = e.target;
+    const selectedTrack = e.target.closest('.track-item');
     const trackId = selectedTrack.dataset.trackId;
+
+    // Retrive track information from the selected track
+    const trackInfo = {
+      id: trackId,
+      name: selectedTrack.querySelector('.track-details p').textContent,
+      artist: selectedTrack.querySelector('.track-artist').textContent,
+      image: selectedTrack.querySelector('img').src,
+    };
+
     console.log('Selected Track:', selectedTrack);
-    console.log('Track ID:', trackId);
-    addToPlaylist(trackId);
+    console.log('Track Info:', trackInfo);
+    addToPlaylist(trackInfo);
   }
 }
+
+// Display Artist's top tracks
+function displayArtistTopTracks(data) {
+  // Clear existing content in artistTopTracks container
+  artistTopTracks.innerHTML = '';
+
+  // Display artist details
+  displayArtistDetails(data.tracks[0].artists[0]);
+
+  if (data.tracks.length > 0) {
+    displayTracks(data.tracks.items);
+  }
+  artistTopTracks.style.opacity = 1;
+}
+
+// Display Artist's details
+function displayArtistDetails(artist) {}

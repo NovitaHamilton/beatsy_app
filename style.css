@@ -33,6 +33,8 @@ h1 {
   margin: 2rem 4rem;
 }
 
+/*-----------------------------MAIN - LEFT-------------------------*/
+
 .left-section {
   display: flex;
   flex-direction: column;
@@ -57,7 +59,7 @@ h1 {
   border: 0.3rem solid teal;
   border-radius: 2rem;
   font-size: 2rem;
-  height: 40%;
+  height: 50%;
   padding-left: 4rem;
   width: 50%;
 }
@@ -69,6 +71,16 @@ h1 {
   opacity: 0;
   transition: opacity 1.2s;
 }
+
+.artist-top-tracks {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  opacity: 0;
+  transition: opacity 1.2s;
+}
+
+/*------------------------Artist----------------------*/
 
 .artists-container {
   display: flex;
@@ -106,9 +118,7 @@ h1 {
   font-size: 2rem;
 }
 
-.right-section {
-  width: 30%;
-}
+/*--------------------Songs----------------*/
 
 .tracks-container {
   display: flex;
@@ -138,23 +148,11 @@ h1 {
   padding: 0.5rem 1rem;
 }
 
-.track-item-playlist {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 2rem;
-  width: 80%;
-  border: 0.1rem solid #ffffffdd;
-  background-color: #e1785eb9;
-  border-radius: 1rem;
-  padding: 0.5rem 1rem;
-}
-
 .track-details {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
+  width: 80%;
 }
 
 .track-item img,
@@ -167,6 +165,37 @@ h1 {
 .track-artist {
   font-size: 1.5rem;
   font-weight: bolder;
+}
+
+/*------------------Playlist-------------------*/
+
+.right-section {
+  width: 30%;
+}
+
+.track-item-playlist {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 2rem;
+  width: 80%;
+  border: 0.1rem solid #ffffffdd;
+  background-color: #e1785eb9;
+  border-radius: 1rem;
+  padding: 0.5rem 1.5rem;
+}
+
+.add-to-playlist,
+.remove-from-playlist {
+  border: none;
+  background-color: transparent;
+  justify-self: flex-end;
+  cursor: pointer;
+}
+
+.add-to-playlist i {
+  font-size: 2.5rem;
 }
 
 .playlist {
