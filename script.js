@@ -307,10 +307,10 @@ function displayArtists(artists) {
       artistImage.src = imageDetails.url;
 
       //Set the height and width attributes
-      artistImage.height = imageDetails.height;
-      artistImage.width = imageDetails.width;
-      console.log('height', imageDetails.height);
-      console.log('width', imageDetails.width);
+      // artistImage.height = imageDetails.height;
+      // artistImage.width = imageDetails.width;
+      // console.log('height', imageDetails.height);
+      // console.log('width', imageDetails.width);
 
       artistItem.appendChild(artistImage);
     }
