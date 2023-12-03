@@ -245,13 +245,14 @@ function displayPlaylist(playlist) {
   // Track selector
   const elementTrackItem = document.querySelectorAll('.track-item-playlist');
 
-  // Event listener to capture selected track on click
+  // Event listener to capture selected track on remove button click
   elementTrackItem.forEach(function (track) {
-    track.addEventListener('click', onRemoveClick);
+    const deleteButton = track.querySelector('.remove-from-playlist');
+    deleteButton.addEventListener('click', onDeleteButtonClick);
   });
 
   // When user click on remove a track
-  function onRemoveClick(e) {
+  function onDeleteButtonClick(e) {
     e.preventDefault();
     console.log(e.target);
     const selectedTrack = e.target.closest('.track-item-playlist');
@@ -418,11 +419,12 @@ function displayTracks(tracks, title) {
 
   // Event listener to capture selected track on click
   elementTrackItem.forEach(function (track) {
-    track.addEventListener('click', onTrackClick);
+    const addButton = track.querySelector('.add-to-playlist');
+    addButton.addEventListener('click', onAddButtonClick);
   });
 
   // When user click on a track
-  function onTrackClick(e) {
+  function onAddButtonClick(e) {
     e.preventDefault();
     console.log(e.target);
     const selectedTrack = e.target.closest('.track-item');
