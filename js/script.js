@@ -58,7 +58,6 @@ const getPlaylist = async () => {
     const response = await fetch(`${mockAPIUrl}`);
     const data = await response.json();
     displayPlaylist(data);
-    console.log(data);
   } catch (error) {
     alert('Fetch error: ' + error.message);
   }
@@ -79,7 +78,6 @@ const addToPlaylist = async (trackInfo) => {
       }),
     });
     const addData = await addResponse.json();
-    console.log('Added data', addData);
 
     // To get the updated playlist
     const playlistResponse = await fetch(`${mockAPIUrl}`);
@@ -115,7 +113,6 @@ const removeFromPlaylist = async (trackId) => {
 
 // To get artist's top tracks
 const getArtistTopTracks = async (artistId) => {
-  console.log(token);
   try {
     const response = await fetch(
       `https://api.spotify.com/v1/artists/${artistId}/top-tracks?market=CA`,
@@ -125,10 +122,8 @@ const getArtistTopTracks = async (artistId) => {
       }
     );
     const topTracks = await response.json();
-    console.log(topTracks);
 
     const artistDetails = await getArtistDetails(artistId);
-    console.log(artistDetails);
 
     displayArtistTopTracks(topTracks, artistDetails);
     return topTracks, artistDetails;
@@ -147,7 +142,6 @@ const getArtistDetails = async (artistId) => {
       }
     );
     const data = await response.json();
-    console.log(data);
     return data;
   } catch (error) {
     alert('Fetch error: ' + error.message);
@@ -222,7 +216,6 @@ function displayPlaylist(playlist) {
 
     // Store track ID as a custom data attribute with 'dataset'
     trackItem.dataset.trackId = track.id;
-    console.log(track.id);
 
     // Add button to remove track to playlist
     const deleteButton = document.createElement('button');
@@ -258,12 +251,8 @@ function displayPlaylist(playlist) {
   // When user click on remove a track
   function onDeleteButtonClick(e) {
     e.preventDefault();
-    console.log(e.target);
     const selectedTrack = e.target.closest('.track-item-playlist');
     const trackId = selectedTrack.dataset.trackId;
-
-    console.log('Selected Track:', selectedTrack);
-    console.log('Track ID:', trackId);
     removeFromPlaylist(trackId);
   }
 }
@@ -311,12 +300,6 @@ function displayArtists(artists) {
       //Set the image attribute
       artistImage.src = imageDetails.url;
 
-      //Set the height and width attributes
-      // artistImage.height = imageDetails.height;
-      // artistImage.width = imageDetails.width;
-      // console.log('height', imageDetails.height);
-      // console.log('width', imageDetails.width);
-
       artistItem.appendChild(artistImage);
     }
 
@@ -348,8 +331,6 @@ function displayArtists(artists) {
     e.preventDefault();
     const selectedArtist = e.target.closest('.artist-item');
     const artistId = selectedArtist.dataset.artistId;
-    console.log('Selected Artist:', selectedArtist);
-    console.log('Artist ID:', artistId);
     getArtistTopTracks(artistId);
     clearSearchResults();
   }
@@ -396,7 +377,6 @@ function displayTracks(tracks, title) {
 
     // Store track ID as a custom data attribute with 'dataset'
     trackItem.dataset.trackId = track.id;
-    console.log(track.id);
 
     // Add button to add track to playlist
     const addButton = document.createElement('button');
@@ -431,7 +411,6 @@ function displayTracks(tracks, title) {
   // When user click on a track
   function onAddButtonClick(e) {
     e.preventDefault();
-    console.log(e.target);
     const selectedTrack = e.target.closest('.track-item');
     const trackId = selectedTrack.dataset.trackId;
 
@@ -443,8 +422,6 @@ function displayTracks(tracks, title) {
       image: selectedTrack.querySelector('img').src,
     };
 
-    console.log('Selected Track:', selectedTrack);
-    console.log('Track Info:', trackInfo);
     addToPlaylist(trackInfo);
   }
 }
@@ -462,7 +439,6 @@ function displayArtistTopTracks(topTracks, artistDetails) {
 
 // Display Artist's details
 function displayArtistDetails(artistDetails) {
-  console.log(artistDetails);
   // Create HTML elements for artists
   const artistsContainer = document.createElement('div');
   artistsContainer.classList.add('artists-container');
@@ -501,12 +477,10 @@ function displayArtistDetails(artistDetails) {
   const followersCount = artistDetails.followers.total.toLocaleString();
   artistFollowers.textContent = `Followers: ${followersCount}`;
   artistDetail.appendChild(artistFollowers);
-  console.log(artistFollowers);
 
   const artistGenres = document.createElement('p');
   artistGenres.textContent = `Genre: ${artistDetails.genres[0]}`;
   artistDetail.appendChild(artistGenres);
-  console.log(artistGenres);
 
   artistsContainer.appendChild(artistsTitle);
   artistsContainer.appendChild(artistItem);
