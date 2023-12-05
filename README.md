@@ -1,8 +1,20 @@
 # beatsy_app
-A simple Music Discovery App for Coding in Color Full Stack Developer Program
+A simple Music Discovery App for Coding in Color Full Stack Developer Program, using Spotify API
 
-## Objectives
-Build an application with Spotify APILinks to an external site, to allow users to discover music tracks, albums, and artists based on their tastes.
+## Features:
+
+- Search for artists or songs
+- Click on artist to see artist info and their top tracks
+- Add song to playlist
+- Delete song from playlist
+
+## Potential Features Expansion:
+
+- Add a player to be able to play the songs
+- Add search based on albums and genres
+- Add search results with albums, playlist, recommendations
+- and many more...
+
 
 ## Assignment Details
 
