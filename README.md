@@ -10,6 +10,7 @@ A simple Music Discovery App for Coding in Color Full Stack Developer Program, u
 
 ## Potential Features Expansion:
 
+- Add user authentication
 - Add a player to be able to play the songs
 - Add search based on albums and genres
 - Add search results with albums, playlist, recommendations
