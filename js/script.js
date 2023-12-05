@@ -31,7 +31,7 @@ const getToken = async () => {
     token = data.access_token;
     return token;
   } catch (error) {
-    console.error('Fetch error', error);
+    alert('Fetch error: ' + error.message);
   }
 };
 
@@ -48,7 +48,7 @@ const searchItem = async (searchInput) => {
     const data = await response.json();
     displaySearchResult(data);
   } catch (error) {
-    console.error('Fetch error', error);
+    alert('Fetch error: ' + error.message);
   }
 };
 
@@ -60,7 +60,7 @@ const getPlaylist = async () => {
     displayPlaylist(data);
     console.log(data);
   } catch (error) {
-    console.error('Fetch error', error);
+    alert('Fetch error: ' + error.message);
   }
 };
 
@@ -90,7 +90,7 @@ const addToPlaylist = async (trackInfo) => {
 
     return addData;
   } catch (error) {
-    console.error('Fetch error', error);
+    alert('Fetch error: ' + error.message);
   }
 };
 
@@ -133,7 +133,7 @@ const getArtistTopTracks = async (artistId) => {
     displayArtistTopTracks(topTracks, artistDetails);
     return topTracks, artistDetails;
   } catch (error) {
-    console.error('Fetch error', error);
+    alert('Fetch error: ' + error.message);
   }
 };
 
@@ -150,7 +150,7 @@ const getArtistDetails = async (artistId) => {
     console.log(data);
     return data;
   } catch (error) {
-    console.error('Fetch error', error);
+    alert('Fetch error: ' + error.message);
   }
 };
 
@@ -210,6 +210,7 @@ function displayPlaylist(playlist) {
 
     //Create a paragraph for track's name
     const trackName = document.createElement('p');
+    trackName.classList.add('track-name');
     trackName.textContent = track.name;
     trackDetails.appendChild(trackName);
 
@@ -383,6 +384,7 @@ function displayTracks(tracks, title) {
 
     //Create a paragraph for track's name
     const trackName = document.createElement('p');
+    trackName.classList.add('track-name');
     trackName.textContent = track.name;
     trackDetails.appendChild(trackName);
 
@@ -469,7 +471,7 @@ function displayArtistDetails(artistDetails) {
   artistsTitle.textContent = 'Artists';
 
   const artistItem = document.createElement('div');
-  artistItem.classList.add('artist-item');
+  artistItem.classList.add('artist-item-top-tracks');
 
   // Check if artist has images and the image array is not empty
   if (artistDetails.images && artistDetails.images.length > 0) {
@@ -480,28 +482,34 @@ function displayArtistDetails(artistDetails) {
     artistImage.src = imageDetails.url;
 
     //Set the height and width attributes
-    artistImage.height = imageDetails.height;
-    artistImage.width = imageDetails.width;
+    // artistImage.height = imageDetails.height;
+    // artistImage.width = imageDetails.width;
 
     artistItem.appendChild(artistImage);
   }
 
+  const artistDetail = document.createElement('div');
+  artistDetail.classList.add('artist-detail');
+
   //Create a paragraph for artist's name
-  const artistName = document.createElement('p');
+  const artistName = document.createElement('h3');
+  artistName.classList.add('artist-name');
   artistName.textContent = artistDetails.name;
-  artistItem.appendChild(artistName);
+  artistDetail.appendChild(artistName);
 
   const artistFollowers = document.createElement('p');
-  artistFollowers.textContent = `Followers: ${artistDetails.followers.total}`;
-  artistItem.appendChild(artistFollowers);
+  const followersCount = artistDetails.followers.total.toLocaleString();
+  artistFollowers.textContent = `Followers: ${followersCount}`;
+  artistDetail.appendChild(artistFollowers);
   console.log(artistFollowers);
 
   const artistGenres = document.createElement('p');
   artistGenres.textContent = `Genre: ${artistDetails.genres[0]}`;
-  artistItem.appendChild(artistGenres);
+  artistDetail.appendChild(artistGenres);
   console.log(artistGenres);
 
   artistsContainer.appendChild(artistsTitle);
   artistsContainer.appendChild(artistItem);
+  artistItem.appendChild(artistDetail);
   searchResults.appendChild(artistsContainer);
 }
