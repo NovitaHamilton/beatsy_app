@@ -1,6 +1,8 @@
 # beatsy_app
 A simple Music Discovery App for Coding in Color Full Stack Developer Program, using Spotify API (GET & POST) and mockAPI (GET, POST, DELETE).
 
+Link to deployed page: https://beatsy-music.netlify.app/
+
 ## Features:
 
 - Search for artists or songs
